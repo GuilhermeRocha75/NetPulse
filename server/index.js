@@ -3,17 +3,20 @@ const cors = require("cors");
 const app = express();
 const port = 3001;
 
-// Configurações básicas
+// Middlewares
 app.use(cors());
 app.use(express.json());
 
-// Teste inicial para confirmar que o servidor está ativo
+// Rotas
+const devicesRoutes = require("./routes/devicesRoutes");
+app.use("/devices", devicesRoutes);
+
+// Rota inicial
 app.get("/", (req, res) => {
     res.send("Servidor NetPulse está rodando!");
 });
 
-// Iniciando servidor
+// Iniciar servidor
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
- 
