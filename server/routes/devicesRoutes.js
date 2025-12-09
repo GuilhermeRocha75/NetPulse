@@ -9,4 +9,7 @@ router.post("/", devicesController.createDevice);
 router.put("/:id", devicesController.updateDevice);
 router.delete("/:id", devicesController.deleteDevice);
 
+// Rota para testar ping
+router.get("/:id/ping", devicesController.pingDevice);
+
 module.exports = router;

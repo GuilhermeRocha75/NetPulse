@@ -1,13 +1,22 @@
 import { useEffect, useState, useCallback } from "react";
 import "./App.css";
 import DeviceForm from "./components/DeviceForm";
+import EditDeviceForm from "./components/EditDeviceForm.js";
+import NetworkScanner from "./components/NetworkScanner";
+// ...
+
+
 
 function App() {
   const [devices, setDevices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editingDevice, setEditingDevice] = useState(null);
+  const [statusMap, setStatusMap] = useState({}); // <-- status do ping
 
-  // Função para buscar dispositivos
+  // ===========================
+  // CARREGA LISTA DE DISPOSITIVOS
+  // ===========================
   const fetchDevices = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -17,7 +26,6 @@ function App() {
       const data = await res.json();
       setDevices(data);
     } catch (err) {
-      console.error(err);
       setError(err.message || "Erro desconhecido");
     } finally {
       setLoading(false);
@@ -28,22 +36,54 @@ function App() {
     fetchDevices();
   }, [fetchDevices]);
 
-  // Função para remover dispositivo
-  const removeDevice = async (id) => {
-    if (!window.confirm("Tem certeza que deseja remover este dispositivo?")) return;
+  // ===========================
+  // PING AUTOMÁTICO
+  // ===========================
+  const updatePingStatus = useCallback(async () => {
+    try {
+      const newStatus = {};
+
+      for (const dev of devices) {
+        const res = await fetch(`http://localhost:3001/devices/${dev.id}/ping`);
+        const data = await res.json();
+
+        newStatus[dev.id] = {
+          alive: data.alive,
+          time: data.time
+        };
+      }
+
+      setStatusMap(newStatus);
+    } catch (error) {
+      console.error("Erro ao atualizar status de ping:", error);
+    }
+  }, [devices]);
+
+  // roda a cada 5 segundos
+  useEffect(() => {
+    if (devices.length === 0) return;
+
+    updatePingStatus(); // executa ao abrir
+
+    const interval = setInterval(updatePingStatus, 5000);
+    return () => clearInterval(interval);
+  }, [devices, updatePingStatus]);
+
+  // ===========================
+  // DELETE
+  // ===========================
+  const handleDelete = async (id) => {
+    if (!window.confirm("Tem certeza que deseja remover este dispositivo?"))
+      return;
 
     try {
       const res = await fetch(`http://localhost:3001/devices/${id}`, {
         method: "DELETE",
       });
-
       if (!res.ok) throw new Error("Erro ao remover dispositivo");
-
-      // Atualiza lista depois de remover
       fetchDevices();
     } catch (err) {
-      console.error(err);
-      alert("Erro ao remover dispositivo.");
+      alert(err.message);
     }
   };
 
@@ -51,16 +91,37 @@ function App() {
     <div className="App" style={{ padding: 20 }}>
       <h1>NetPulse - Dispositivos</h1>
 
-      <DeviceForm onAdd={fetchDevices} />
+
+
+      {/* FORM DE ADIÇÃO */}
+      {!editingDevice && <DeviceForm onAdd={fetchDevices} />}
+
+      {/* FORM DE EDIÇÃO */}
+      {editingDevice && (
+        <EditDeviceForm
+          device={editingDevice}
+          onCancel={() => setEditingDevice(null)}
+          onSaved={() => {
+            setEditingDevice(null);
+            fetchDevices();
+          }}
+        />
+      )}
 
       <section>
         <h2>Lista de dispositivos</h2>
 
         {loading && <p>Carregando...</p>}
 
-        {error && <p style={{ color: "crimson" }}>Erro: {error}</p>}
+        {error && (
+          <p style={{ color: "crimson" }}>
+            Erro: {error}
+          </p>
+        )}
 
-        {!loading && devices.length === 0 && <p>Nenhum dispositivo encontrado.</p>}
+        {!loading && devices.length === 0 && (
+          <p>Nenhum dispositivo encontrado.</p>
+        )}
 
         {!loading && devices.length > 0 && (
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
@@ -70,39 +131,91 @@ function App() {
                 <th style={{ border: "1px solid #ddd", padding: 8 }}>Nome</th>
                 <th style={{ border: "1px solid #ddd", padding: 8 }}>IP</th>
                 <th style={{ border: "1px solid #ddd", padding: 8 }}>Tipo</th>
+                <th style={{ border: "1px solid #ddd", padding: 8 }}>Status</th>
                 <th style={{ border: "1px solid #ddd", padding: 8 }}>Ações</th>
               </tr>
             </thead>
+
             <tbody>
               {devices.map((d) => (
                 <tr key={d.id}>
-                  <td style={{ border: "1px solid #eee", padding: 8 }}>{d.id}</td>
-                  <td style={{ border: "1px solid #eee", padding: 8 }}>{d.name}</td>
-                  <td style={{ border: "1px solid #eee", padding: 8 }}>{d.ip_address}</td>
-                  <td style={{ border: "1px solid #eee", padding: 8 }}>{d.type}</td>
+                  <td style={{ border: "1px solid #eee", padding: 8 }}>
+                    {d.id}
+                  </td>
+                  <td style={{ border: "1px solid #eee", padding: 8 }}>
+                    {d.name}
+                  </td>
+                  <td style={{ border: "1px solid #eee", padding: 8 }}>
+                    {d.ip_address}
+                  </td>
+                  <td style={{ border: "1px solid #eee", padding: 8 }}>
+                    {d.type}
+                  </td>
+
+                  {/* STATUS DO PING */}
+                  <td style={{ border: "1px solid #eee", padding: 8 }}>
+                    {statusMap[d.id] ? (
+                      statusMap[d.id].alive ? (
+                        <span style={{ color: "green", fontWeight: "bold" }}>
+                          🟢 Online ({statusMap[d.id].time} ms)
+                        </span>
+                      ) : (
+                        <span style={{ color: "red", fontWeight: "bold" }}>
+                          🔴 Offline
+                        </span>
+                      )
+                    ) : (
+                      <span>Carregando...</span>
+                    )}
+                  </td>
+
                   <td style={{ border: "1px solid #eee", padding: 8 }}>
                     <button
-                      onClick={() => removeDevice(d.id)}
                       style={{
-                        backgroundColor: "crimson",
+                        background: "#45aaeeff",
                         color: "white",
-                        padding: "6px 12px",
-                        border: "none",
-                        cursor: "pointer",
-                        borderRadius: "4px",
+                        marginRight: 10,
                       }}
+                      onClick={() => setEditingDevice(d)}
+                    >
+                      Editar
+                    </button>
+
+                    <button
+                      style={{
+                        background: "crimson",
+                        color: "white",
+                        marginRight: 10,
+                      }}
+                      onClick={() => handleDelete(d.id)}
                     >
                       Remover
                     </button>
+
+
                   </td>
                 </tr>
+
+
+
+
+
               ))}
             </tbody>
           </table>
         )}
       </section>
+ 
     </div>
+
+
+
+
   );
+  
+
 }
+
+
 
 export default App;

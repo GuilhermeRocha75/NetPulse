@@ -114,7 +114,7 @@ export default function DeviceForm({ onAdd, onEdit, editingDevice }) {
       </div>
 
       <div style={{ marginTop: 8 }}>
-        <button type="submit" disabled={loading}>
+        <button  style={{ background: "#20ad67ff", color: "white"}} type="submit" disabled={loading}>
           {loading
             ? editingDevice
               ? "Salvando..."

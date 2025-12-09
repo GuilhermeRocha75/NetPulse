@@ -16,6 +16,13 @@ app.get("/", (req, res) => {
     res.send("Servidor NetPulse está rodando!");
 });
 
+// ... outros requires
+const networkRoutes = require("./routes/networkRoutes");
+
+// depois de app.use(express.json()) e etc:
+app.use("/network", networkRoutes);
+
+
 // Iniciar servidor
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
