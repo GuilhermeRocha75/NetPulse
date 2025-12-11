@@ -1,9 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
 import "./App.css";
-import DeviceForm from "./components/DeviceForm";
-import EditDeviceForm from "./components/EditDeviceForm.js";
-import NetworkScanner from "./components/NetworkScanner";
-// ...
+import "./styles/Titles.css";
+import DeviceForm from "./components/DeviceForm/DeviceForm.jsx";
+import EditDeviceForm from "./components/EditDeviceForm/EditDeviceForm.js";
+import NetworkScanner from "./components/NetworkScanner/NetworkScanner.jsx";
+import StatusLoader from "./components/StatusLoader/StatusLoader.jsx";
 
 
 
@@ -12,11 +13,11 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editingDevice, setEditingDevice] = useState(null);
-  const [statusMap, setStatusMap] = useState({}); // <-- status do ping
+  const [statusMap, setStatusMap] = useState({}); //status do ping
 
-  // ===========================
+
   // CARREGA LISTA DE DISPOSITIVOS
-  // ===========================
+
   const fetchDevices = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -36,9 +37,8 @@ function App() {
     fetchDevices();
   }, [fetchDevices]);
 
-  // ===========================
   // PING AUTOMÁTICO
-  // ===========================
+ 
   const updatePingStatus = useCallback(async () => {
     try {
       const newStatus = {};
@@ -63,15 +63,14 @@ function App() {
   useEffect(() => {
     if (devices.length === 0) return;
 
-    updatePingStatus(); // executa ao abrir
+    updatePingStatus(); 
 
     const interval = setInterval(updatePingStatus, 5000);
     return () => clearInterval(interval);
   }, [devices, updatePingStatus]);
 
-  // ===========================
   // DELETE
-  // ===========================
+
   const handleDelete = async (id) => {
     if (!window.confirm("Tem certeza que deseja remover este dispositivo?"))
       return;
@@ -89,7 +88,8 @@ function App() {
 
   return (
     <div className="App" style={{ padding: 20 }}>
-      <h1>NetPulse - Dispositivos</h1>
+  <h1 className="main-title">NetPulse - Dispositivos</h1>
+
 
 
 
@@ -109,7 +109,8 @@ function App() {
       )}
 
       <section>
-        <h2>Lista de dispositivos</h2>
+       <h2 className="section-title">Lista de dispositivos</h2>
+
 
         {loading && <p>Carregando...</p>}
 
@@ -124,7 +125,7 @@ function App() {
         )}
 
         {!loading && devices.length > 0 && (
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <table className="table-terminal">
             <thead>
               <tr>
                 <th style={{ border: "1px solid #ddd", padding: 8 }}>ID</th>
@@ -153,44 +154,32 @@ function App() {
                   </td>
 
                   {/* STATUS DO PING */}
-                  <td style={{ border: "1px solid #eee", padding: 8 }}>
-                    {statusMap[d.id] ? (
-                      statusMap[d.id].alive ? (
-                        <span style={{ color: "green", fontWeight: "bold" }}>
-                          🟢 Online ({statusMap[d.id].time} ms)
-                        </span>
-                      ) : (
-                        <span style={{ color: "red", fontWeight: "bold" }}>
-                          🔴 Offline
-                        </span>
-                      )
-                    ) : (
-                      <span>Carregando...</span>
-                    )}
-                  </td>
+                 <td style={{ border: "1px solid #eee", padding: 8 }}>
+  {statusMap[d.id] ? (
+    statusMap[d.id].alive ? (
+      <span style={{ color: "green", fontWeight: "bold" }}>
+        🟢 Online ({statusMap[d.id].time} ms)
+      </span>
+    ) : (
+      <span style={{ color: "red", fontWeight: "bold" }}>
+        🔴 Offline
+      </span>
+    )
+  ) : (
+    <StatusLoader />
+  )}
+</td>
+
 
                   <td style={{ border: "1px solid #eee", padding: 8 }}>
-                    <button
-                      style={{
-                        background: "#45aaeeff",
-                        color: "white",
-                        marginRight: 10,
-                      }}
-                      onClick={() => setEditingDevice(d)}
-                    >
-                      Editar
-                    </button>
+                   <button className="button-terminal" onClick={() => setEditingDevice(d)}>
+  Editar
+</button>
 
-                    <button
-                      style={{
-                        background: "crimson",
-                        color: "white",
-                        marginRight: 10,
-                      }}
-                      onClick={() => handleDelete(d.id)}
-                    >
-                      Remover
-                    </button>
+<button className="button-terminal button-danger" onClick={() => handleDelete(d.id)}>
+  Remover
+</button>
+
 
 
                   </td>

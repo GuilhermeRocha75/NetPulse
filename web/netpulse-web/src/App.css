@@ -7,6 +7,16 @@
   pointer-events: none;
 }
 
+body {
+  margin: 0;
+  padding: 0;
+  background: url("./assets/premium_photo-1733306493254-52b143296396.jfif") no-repeat center center fixed;
+  background-size: cover;
+  font-family: "Inter", Arial, sans-serif;
+  color: #f5f5f5;
+}
+
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -36,3 +46,67 @@
     transform: rotate(360deg);
   }
 }
+
+/*TABELA TEMA TERMINAL*/
+
+.table-terminal {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #1a1a1a; 
+  color: #0f0; 
+  font-family: "Courier New", Courier, monospace;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border: 0.1em solid #333;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.table-terminal th {
+  background-color: #333; 
+  padding: 10px;
+  border-bottom: 0.1em solid #444;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #eee;
+}
+
+.table-terminal td {
+  padding: 10px;
+  border-bottom: 0.1em solid #333;
+}
+
+.table-terminal tr:nth-child(even) {
+  background-color: #111; 
+}
+
+.table-terminal tr:hover {
+  background-color: #262626;
+}
+
+/* btn no tema terminal */
+.button-terminal {
+  background-color: #0b0; 
+  color: #000;
+  border: 0.1em solid #0f0;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: 0.2s;
+}
+
+.button-terminal:hover {
+  background-color: #0f0;
+}
+
+/* Botão remover */
+.button-danger {
+  background-color: #e33;
+  border-color: #e33;
+  color: #fff;
+}
+
+.button-danger:hover {
+  background-color: #ff4444;
+}
+
+

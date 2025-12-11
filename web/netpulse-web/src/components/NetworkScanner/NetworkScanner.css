@@ -1,0 +1,72 @@
+.scanner-box {
+  margin-top: 20px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.scanner-range {
+  margin-bottom: 8px;
+}
+
+.scanner-buttons button {
+  margin-right: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  background: #45aaee;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  transition: 0.2s;
+}
+
+.scanner-buttons button:disabled {
+  background: #9bcff0;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background: #777 !important;
+}
+
+.progress-area {
+  margin-top: 12px;
+}
+
+.progress-bar {
+  height: 12px;
+  background: #eee;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #45aaee;
+}
+
+.progress-text {
+  margin-top: 6px;
+}
+
+.results-area {
+  margin-top: 12px;
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.results-table th,
+.results-table td {
+  border: 1px solid #ddd;
+  padding: 6px;
+}
+
+.no-results {
+  text-align: center;
+  padding: 8px;
+  color: #666;
+}

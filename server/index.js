@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
 // ... outros requires
 const networkRoutes = require("./routes/networkRoutes");
 
-// depois de app.use(express.json()) e etc:
+
 app.use("/network", networkRoutes);
 
 

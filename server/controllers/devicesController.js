@@ -1,9 +1,8 @@
 const db = require("../config/db");
 const ping = require("ping");
 
-// =========================
+
 // GET /devices
-// =========================
 const getDevices = async (req, res) => {
   try {
     const [rows] = await db.query("SELECT * FROM devices");
@@ -14,9 +13,8 @@ const getDevices = async (req, res) => {
   }
 };
 
-// =========================
+
 // POST /devices
-// =========================
 const createDevice = async (req, res) => {
   const { name, ip_address, type } = req.body;
 
@@ -40,9 +38,8 @@ const createDevice = async (req, res) => {
   }
 };
 
-// =========================
+
 // PUT /devices/:id
-// =========================
 const updateDevice = async (req, res) => {
   const { id } = req.params;
   const { name, ip_address, type } = req.body;
@@ -63,9 +60,8 @@ const updateDevice = async (req, res) => {
   }
 };
 
-// =========================
+
 // DELETE /devices/:id
-// =========================
 const deleteDevice = async (req, res) => {
   const { id } = req.params;
 
@@ -84,9 +80,8 @@ const deleteDevice = async (req, res) => {
   }
 };
 
-// =========================
+
 // GET /devices/:id/ping
-// =========================
 const pingDevice = async (req, res) => {
   const { id } = req.params;
 

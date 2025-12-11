@@ -7,8 +7,7 @@ const ping = require("ping");
  */
 exports.scanNetwork = async (req, res) => {
   try {
-    // parâmetros configuráveis via query string (opcional)
-    // ex: /network/scan?base=172.29.20.&start=1&end=254&batch=25&timeout=1
+  
     const baseIP = req.query.base || "172.29.20.";
     const start = parseInt(req.query.start ?? "1", 10);
     const end = parseInt(req.query.end ?? "254", 10);
@@ -51,8 +50,7 @@ exports.scanNetwork = async (req, res) => {
         if (r.alive) active.push(r);
       }
 
-      // opcional: poderia enviar eventos parciais via SSE / websocket
-      // mas aqui apenas continuamos e retornamos tudo no final
+ 
     }
 
     res.json({
