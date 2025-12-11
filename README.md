@@ -1,131 +1,120 @@
 #  NetPulse
 > **Monitoramento de Conectividade em Tempo Real**
 
-O **NetPulse** é um sistema *Full Stack* projetado para registrar dispositivos de rede e monitorar sua conectividade (Ping) em tempo real.  
-Com uma interface moderna estilo *Cyberpunk/Terminal*, ele oferece feedback visual imediato sobre o status da sua infraestrutura.
+O **NetPulse** é um sistema *Full Stack* projetado para registrar dispositivos de rede e monitorar sua conectividade (Ping) em tempo real. Com uma interface moderna estilo "Cyberpunk/Terminal", ele oferece feedback visual imediato sobre o status da sua infraestrutura.
 
 ---
 
 ##  Funcionalidades
 
-- **Dashboard em Tempo Real:** visualização clara de dispositivos Online/Offline.  
-- **Monitoramento Automático:** testes de ping a cada 5 segundos.  
-- **Gerenciamento Completo:** cadastro, edição e remoção de dispositivos.  
-- **Scanner de Rede:** ferramenta integrada para descobrir IPs ativos.  
-- **Histórico de Latência:** armazena e exibe o tempo de resposta (ms).  
+- **Dashboard em Tempo Real:** visualização clara de dispositivos Online/Offline.
+- **Monitoramento Automático:** testes de ping a cada 5 segundos.
+- **Gerenciamento Completo:** cadastro, edição e remoção de dispositivos.
+- **Scanner de Rede:** ferramenta integrada para descobrir IPs ativos em um intervalo.
+- **Histórico de Latência:** exibe o tempo de resposta (ms).
 
 ---
 
 ##  Tecnologias Utilizadas
 
 ### **Backend**
-- Node.js  
-- Express  
-- MySQL  
-- Biblioteca `ping` (para testes ICMP)
+- Node.js
+- Express
+- MySQL
+- Biblioteca `ping` (Node.js)
 
 ### **Frontend**
-- React  
-- CSS customizado estilo *Dark Neon*  
+- React
+- CSS personalizado (tema dark neon)
 - Fetch API
 
 ---
 
 ##  Pré-requisitos
 
-Antes de rodar o projeto, garanta que possui instalado:
+Antes de iniciar, garanta que possui:
 
-1. **Node.js** (16+)
+1. **Node.js 16+**  
+   https://nodejs.org/en/download/
+
 2. **MySQL Server**  
-3. **Permissão para enviar pacotes ICMP** (caso necessário)
+   Pode ser nativo, via XAMPP, Workbench ou Docker.
+
+3. **Permissões do Sistema:**  
+   - Linux/macOS: o comando `ping` deve estar disponível.  
+   - Windows: permitir tráfego ICMP no firewall.
 
 ---
 
 ##  Como Executar o Projeto
 
-### **1. Configurar o Banco de Dados**
+### **1. Configuração do Banco de Dados**
 
-1. Abra seu gerenciador MySQL (Workbench, phpMyAdmin, etc).  
-2. Crie o banco e execute o arquivo:
-
-database/schema.sql
-
-csharp
-Copiar código
-
-3. Verifique as credenciais em:
-
-server/config/db.js
-
-yaml
-Copiar código
+1. Abra seu gerenciador MySQL (Workbench, phpMyAdmin, etc).
+2. Crie um banco de dados.
+3. Execute o arquivo `database/schema.sql` contido no projeto.
+4. Verifique suas credenciais no arquivo:  
+   `server/config/db.js`  
+   Ajuste *host, user, password* se necessário.
 
 ---
 
-### **2. Iniciar o Backend**
+### **2. Configurando e Iniciando o Backend**
+
+No terminal:
 
 ```bash
 cd server
-
-npm install
-
-# Modo dev (se tiver nodemon)
-npm run dev
-
-# Ou:
+npm install express mysql2 cors ping
+npm run dev     # se tiver nodemon
+# OU
 node index.js
-O backend estará rodando em:
+```
+Servidor rodando em: http://localhost:3001
 
-arduino
-Copiar código
-http://localhost:3001
-3. Iniciar o Frontend
-bash
-Copiar código
+3. Configurando e Iniciando o Frontend
+Em outro terminal:
+
+```bash
 cd web/netpulse-web
-
 npm install
-
 npm start
-Abra no navegador:
+```
+Frontend disponível em: http://localhost:3000
 
-arduino
-Copiar código
-http://localhost:3000
 ## API Endpoints
 Dispositivos
-GET /devices – Lista todos
+- GET /devices → Lista todos os dispositivos
 
-POST /devices – Cria novo
+- POST /devices → Cadastra novo dispositivo
+- Body: { name, ip_address, type }
 
-PUT /devices/:id – Atualiza
+- PUT /devices/:id → Atualiza um dispositivo
 
-DELETE /devices/:id – Remove
+- DELETE /devices/:id → Remove um dispositivo
 
-Rede
-GET /network/scan?base=192.168.0.&start=1&end=50
-Escaneia um intervalo da rede local.
+Scanner de Rede
+- GET /network/scan?base=192.168.0.&start=1&end=50
+Varre um intervalo de IPs.
 
- ## Solução de Problemas Comuns
-1. ECONNREFUSED (Erro ao conectar no MySQL)
+## Solução de Problemas Comuns
+❌ Erro de Conexão com o Banco (ECONNREFUSED)
 MySQL não está rodando
 
-Credenciais incorretas em db.js
+Credenciais incorretas em server/config/db.js
 
-Porta errada configurada
+❌ Erro ao Executar Ping
+Linux pode exigir permissões elevadas
 
-2. Ping não funciona
-Firewall bloqueando ICMP
+Windows pode estar bloqueando ICMP no firewall
 
-No Linux, pode exigir permissões elevadas
+❌ Frontend Não Mostra Dados
+Verifique se o backend está ativo na porta 3001
 
-3. Frontend não mostra dispositivos
-Backend não está rodando na porta 3001
+Veja erros no console do navegador (F12)
 
-Erro de CORS
+Problemas com CORS também podem aparecer
 
-Verifique F12 → Console do navegador
-
-## Desenvolvido por
-Guilherme Rocha
-Rafael Moraes
+# Desenvolvido por
+- Guilherme Rocha
+- Rafael Moraes
